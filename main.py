@@ -1,139 +1,110 @@
-from __future__ import print_function
+import pyttsx3 #pip install pyttsx3
+import speech_recognition as sr #pip install speechRecognition
 import datetime
-import os.path
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
+import wikipedia #pip install wikipedia
+import webbrowser
 import os
-import time
-import playsound
-import speech_recognition as sr
-from gtts import gTTS
+import smtplib
 
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-MONTHS = ["january", "february", "march", "april", "june", "july", "august", "september", "october", "november", "december"]
-DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
-DAY_EXTENTIONS = ["rd", "th", "st", "nd"]
+engine = pyttsx3.init('sapi5')
+voices = engine.getProperty('voices')
+# print(voices[1].id)
+engine.setProperty('voice', voices[1].id)
 
-def speak(text):
-    tts = gTTS(text=text, lang="en", tld='ca')
-    filename = "audio.mp3"
-    tts.save(filename)
-    playsound.playsound(filename)
-    os.remove(filename)
 
-def user_voice_input():
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
+
+
+def wishMe():
+    hour = int(datetime.datetime.now().hour)
+    if hour>=0 and hour<12:
+        speak("Good Morning Toad!")
+
+    elif hour>=12 and hour<18:
+        speak("Good Afternoon Toad!")   
+
+    else:
+        speak("Good Evening Toad!")  
+
+    speak("I am Celeste. How may I help you Toad")       
+
+def takeCommand():
+    #It takes microphone input from the user and returns string output
+
     r = sr.Recognizer()
     with sr.Microphone() as source:
+        print("Listening...")
+        r.pause_threshold = 1
         audio = r.listen(source)
-        said = ""
 
-        try:
-            said = r.recognize_google(audio)
-            print(said)
-        except Exception as e:
-            print("Exception : "+str(e))
-    return said
+    try:
+        print("Recognizing...")    
+        query = r.recognize_google(audio, language='en-in')
+        print(f"User said: {query}\n")
 
-def authentication():
-    
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
+    except Exception as e:
+        # print(e)    
+        print("Say that again please...")  
+        return "None"
+    return query
 
-    service = build('calendar', 'v3', credentials=creds)
+def sendEmail(to, content):
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login('youremail@gmail.com', 'your-password')
+    server.sendmail('youremail@gmail.com', to, content)
+    server.close()
 
-    return service
+if __name__ == "__main__":
+    wishMe()
+    while True:
+    # if 1:
+        query = takeCommand().lower()
 
-def get_events(n, service):
+        # Logic for executing tasks based on query
+        if 'wikipedia' in query:
+            speak('Searching Wikipedia...')
+            query = query.replace("wikipedia", "")
+            results = wikipedia.summary(query, sentences=2)
+            speak("According to Wikipedia")
+            print(results)
+            speak(results)
 
-    # Call the Calendar API
-    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    print(f'Getting the upcoming {n} events')
-    events_result = service.events().list(calendarId='primary', timeMin=now,
-                                        maxResults=n, singleEvents=True,
-                                        orderBy='startTime').execute()
-    events = events_result.get('items', [])
+        elif 'open youtube' in query:
+            webbrowser.open("youtube.com")
 
-    if not events:
-        print('No upcoming events found.')
-    for event in events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        print(start, event['summary'])
+        elif 'open google' in query:
+            webbrowser.open("google.com")
 
-def get_date(text):
-    text = text.lower()
-    today = datetime.date.today()
-
-    if text.count("today") > 0:
-        return today
-
-    day = -1
-    day_of_week = -1
-    month = -1
-    year = today.year
-
-    for word in text.split():
-        if word in MONTHS:
-            month = MONTHS.index(word) + 1
-        elif word in DAYS:
-            day_of_week = DAYS.index(word)
-        elif word.isdigit():
-            day = int(word)
-        else:
-            for ext in DAY_EXTENTIONS:
-                found = word.find(ext)
-                if found > 0:
-                    try:
-                        day = int(word[:found])
-                    except:
-                        pass
-
-    # THE NEW PART STARTS HERE
-    if month < today.month and month != -1:  # if the month mentioned is before the current month set the year to the next
-        year = year+1
-
-    # This is slighlty different from the video but the correct version
-    if month == -1 and day != -1:  # if we didn't find a month, but we have a day
-        if day < today.day:
-            month = today.month + 1
-        else:
-            month = today.month
-
-    # if we only found a dta of the week
-    if month == -1 and day == -1 and day_of_week != -1:
-        current_day_of_week = today.weekday()
-        dif = day_of_week - current_day_of_week
-
-        if dif < 0:
-            dif += 7
-            if text.count("next") >= 1:
-                dif += 7
-
-        return today + datetime.timedelta(dif)
-
-    if day != -1:  # FIXED FROM VIDEO
-        return datetime.date(month=month, day=day, year=year)
-
-text = user_voice_input()
-print(get_date(text))
+        elif 'open stackoverflow' in query:
+            webbrowser.open("stackoverflow.com")   
 
 
-#service = authentication()
-#get_events(10, service)
-#start from tutorial 6
+        elif 'play music' in query:
+            music_dir = 'F:\\SONGZ\\SPOTIFY_LIKED'
+            songs = os.listdir(music_dir)
+            print(songs)    
+            os.startfile(os.path.join(music_dir, songs[0]))
+
+        elif 'the time' in query:
+            strTime = datetime.datetime.now().strftime("%H:%M:%S")    
+            speak(f"Sir, the time is {strTime}")
+
+        elif 'open code' in query:
+            codePath = "PATH"
+            os.startfile(codePath)
+
+        elif 'email to harry' in query:
+            try:
+                speak("What should I say?")
+                content = takeCommand()
+                to = "TOEMAIL"    
+                sendEmail(to, content)
+                speak("Email has been sent!")
+            except Exception as e:
+                print(e)
+                speak("Sorry Toad, could not send the mail")
+                
