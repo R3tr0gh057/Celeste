@@ -76,6 +76,7 @@ def googlesearch(content):
     opt = webdriver.ChromeOptions()
     opt.add_argument("--disable-popup-blocking")
     opt.add_argument("--disable-extentions")
+    opt.add_experimental_option("detach", True)
     browser = webdriver.Chrome(chrome_options=opt)
     wait = WebDriverWait(browser, 10)
     try:
@@ -89,7 +90,6 @@ def googlesearch(content):
         sel_search.send_keys(search_string)
         time.sleep(2)
         enter.click()
-        time.sleep(10)
         
     except selenium.common.exceptions.NoSuchElementException:
         print('Missing element')
