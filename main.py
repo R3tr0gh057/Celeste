@@ -8,7 +8,6 @@ import smtplib
 import time
 
 import selenium
-import requests
 from sys import stdout
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -20,7 +19,7 @@ from selenium.webdriver.support import expected_conditions as EC
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 # print(voices[1].id)
-engine.setProperty('voice', voices[1].id)
+engine.setProperty('voice', voices[0].id)
 
 
 def speak(audio):
@@ -72,6 +71,7 @@ def sendEmail(to, content):
 
 #Automated google search using selenium
 def googlesearch(content):
+    keyword = content
     search_selector = '#APjFqb' #search abr css selector
     button_selector = 'gNO89b' #search button class name
     opt = webdriver.ChromeOptions()
@@ -99,8 +99,25 @@ def googlesearch(content):
     except selenium.common.exceptions.ElementNotInteractableException:
         print('Element not interactable')
         speak('The website has crashed due to the element being non interactable')
+    
+    #Block to navigate thu search tabs
+    query = takeCommand().lower()
+    if 'go to images' in query:
+        speak('going to images')
+        images = browser.find_element(By.XPATH, '/html/body/div[6]/div/div[4]/div/div[1]/div/div[1]/div/div[3]/a')
+        images.click()
 
-def youtubeSearch(content):
+    elif 'go to maps' in query:
+        speak('checking maps')
+        maps = browser.find_element(By.CSS_SELECTOR, '#hdtb-msb > div:nth-child(1) > div > div:nth-child(2) > a')
+        maps.click()
+
+    elif 'go to videos' in query:
+        speak('searching youtube for your query')
+        youtubeSearch()
+
+#Function to search youtube and play the first video
+def youtubeSearch():
     search_selector = '/html/body/ytd-app/div[1]/div/ytd-masthead/div[4]/div[2]/ytd-searchbox/form/div[1]/div[1]/input' #search bar xpath
     button_selector = '/html/body/ytd-app/div[1]/div/ytd-masthead/div[4]/div[2]/ytd-searchbox/button' #search button xpath
     video_selector = '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/div/div[1]/div/h3/a/yt-formatted-string' #video selector xpath
@@ -111,7 +128,7 @@ def youtubeSearch(content):
     browser = webdriver.Chrome(chrome_options=opt)
     wait = WebDriverWait(browser, 10)
     try:
-        browser.get(content)
+        browser.get('https://www.youtube.com/')
         wait.until(EC.presence_of_element_located((By.XPATH, button_selector)))
         sel_search = browser.find_element(By.XPATH, search_selector)
         enter = browser.find_element(By.XPATH, button_selector)
@@ -150,7 +167,7 @@ if __name__ == "__main__":
             speak(results)
 
         elif 'open youtube' in query:
-            youtubeSearch('https://www.youtube.com/')
+            youtubeSearch()
 
         elif 'open google' in query:
             #webbrowser.open("google.com")
@@ -192,4 +209,3 @@ if __name__ == "__main__":
             except Exception as e:
                 print(e)
                 speak("Apologies Toad, I could not send the mail")
-                
