@@ -70,9 +70,10 @@ def sendEmail(to, content):
     server.sendmail('youremail@gmail.com', to, content)
     server.close()
 
+#Automated google search using selenium
 def googlesearch(content):
-    search_selector = '#APjFqb'
-    button_selector = 'gNO89b'
+    search_selector = '#APjFqb' #search abr css selector
+    button_selector = 'gNO89b' #search button class name
     opt = webdriver.ChromeOptions()
     opt.add_argument("--disable-popup-blocking")
     opt.add_argument("--disable-extentions")
@@ -85,11 +86,45 @@ def googlesearch(content):
         sel_search = browser.find_element(By.CSS_SELECTOR, search_selector)
         enter = browser.find_element(By.CLASS_NAME, button_selector)
         
-        speak('What should I search for you?')
+        speak('What should I search for you?') #search using voice
         search_string = takeCommand().lower()
         sel_search.send_keys(search_string)
         time.sleep(2)
         enter.click()
+        
+    except selenium.common.exceptions.NoSuchElementException:
+        print('Missing element')
+        speak('A selector element cannot be found or has been replaced')
+    
+    except selenium.common.exceptions.ElementNotInteractableException:
+        print('Element not interactable')
+        speak('The website has crashed due to the element being non interactable')
+
+def youtubeSearch(content):
+    search_selector = '/html/body/ytd-app/div[1]/div/ytd-masthead/div[4]/div[2]/ytd-searchbox/form/div[1]/div[1]/input' #search bar xpath
+    button_selector = '/html/body/ytd-app/div[1]/div/ytd-masthead/div[4]/div[2]/ytd-searchbox/button' #search button xpath
+    video_selector = '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/div/div[1]/div/h3/a/yt-formatted-string' #video selector xpath
+    opt = webdriver.ChromeOptions()
+    opt.add_argument("--disable-popup-blocking")
+    opt.add_argument("--disable-extentions")
+    opt.add_experimental_option("detach", True)
+    browser = webdriver.Chrome(chrome_options=opt)
+    wait = WebDriverWait(browser, 10)
+    try:
+        browser.get(content)
+        wait.until(EC.presence_of_element_located((By.XPATH, button_selector)))
+        sel_search = browser.find_element(By.XPATH, search_selector)
+        enter = browser.find_element(By.XPATH, button_selector)
+        
+        speak('What should I search for you?') #search using voice
+        search_string = takeCommand().lower()
+        sel_search.send_keys(search_string)
+        time.sleep(2)
+        enter.click()
+
+        wait.until(EC.presence_of_element_located((By.XPATH, video_selector)))
+        vid_click = browser.find_element(By.XPATH, video_selector)
+        vid_click.click()
         
     except selenium.common.exceptions.NoSuchElementException:
         print('Missing element')
@@ -115,7 +150,7 @@ if __name__ == "__main__":
             speak(results)
 
         elif 'open youtube' in query:
-            webbrowser.open("youtube.com")
+            youtubeSearch('https://www.youtube.com/')
 
         elif 'open google' in query:
             #webbrowser.open("google.com")
