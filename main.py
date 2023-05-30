@@ -7,14 +7,9 @@ import os
 import smtplib
 import time
 
-import selenium
-from sys import stdout
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from functions.browser.imageSearch import imgsearch
+from functions.browser.googleSearch import gogsearch
+from functions.browser.youtubeSearch import ytsearch
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -69,88 +64,6 @@ def sendEmail(to, content):
     server.sendmail('youremail@gmail.com', to, content)
     server.close()
 
-#Automated google search using selenium
-def googlesearch(content):
-    keyword = content
-    search_selector = '#APjFqb' #search abr css selector
-    button_selector = 'gNO89b' #search button class name
-    opt = webdriver.ChromeOptions()
-    opt.add_argument("--disable-popup-blocking")
-    opt.add_argument("--disable-extentions")
-    opt.add_experimental_option("detach", True)
-    browser = webdriver.Chrome(chrome_options=opt)
-    wait = WebDriverWait(browser, 10)
-    try:
-        browser.get(content)
-        wait.until(EC.presence_of_element_located((By.CLASS_NAME, button_selector)))
-        sel_search = browser.find_element(By.CSS_SELECTOR, search_selector)
-        enter = browser.find_element(By.CLASS_NAME, button_selector)
-        
-        speak('What should I search for you?') #search using voice
-        search_string = takeCommand().lower()
-        sel_search.send_keys(search_string)
-        time.sleep(2)
-        enter.click()
-        
-    except selenium.common.exceptions.NoSuchElementException:
-        print('Missing element')
-        speak('A selector element cannot be found or has been replaced')
-    
-    except selenium.common.exceptions.ElementNotInteractableException:
-        print('Element not interactable')
-        speak('The website has crashed due to the element being non interactable')
-    
-    #Block to navigate thu search tabs
-    query = takeCommand().lower()
-    if 'go to images' in query:
-        speak('going to images')
-        images = browser.find_element(By.XPATH, '/html/body/div[6]/div/div[4]/div/div[1]/div/div[1]/div/div[3]/a')
-        images.click()
-
-    elif 'go to maps' in query:
-        speak('checking maps')
-        maps = browser.find_element(By.CSS_SELECTOR, '#hdtb-msb > div:nth-child(1) > div > div:nth-child(2) > a')
-        maps.click()
-
-    elif 'go to videos' in query:
-        speak('searching youtube for your query')
-        youtubeSearch()
-
-#Function to search youtube and play the first video
-def youtubeSearch():
-    search_selector = '/html/body/ytd-app/div[1]/div/ytd-masthead/div[4]/div[2]/ytd-searchbox/form/div[1]/div[1]/input' #search bar xpath
-    button_selector = '/html/body/ytd-app/div[1]/div/ytd-masthead/div[4]/div[2]/ytd-searchbox/button' #search button xpath
-    video_selector = '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/div/div[1]/div/h3/a/yt-formatted-string' #video selector xpath
-    opt = webdriver.ChromeOptions()
-    opt.add_argument("--disable-popup-blocking")
-    opt.add_argument("--disable-extentions")
-    opt.add_experimental_option("detach", True)
-    browser = webdriver.Chrome(chrome_options=opt)
-    wait = WebDriverWait(browser, 10)
-    try:
-        browser.get('https://www.youtube.com/')
-        wait.until(EC.presence_of_element_located((By.XPATH, button_selector)))
-        sel_search = browser.find_element(By.XPATH, search_selector)
-        enter = browser.find_element(By.XPATH, button_selector)
-        
-        speak('What should I search for you?') #search using voice
-        search_string = takeCommand().lower()
-        sel_search.send_keys(search_string)
-        time.sleep(2)
-        enter.click()
-
-        wait.until(EC.presence_of_element_located((By.XPATH, video_selector)))
-        vid_click = browser.find_element(By.XPATH, video_selector)
-        vid_click.click()
-        
-    except selenium.common.exceptions.NoSuchElementException:
-        print('Missing element')
-        speak('A selector element cannot be found or has been replaced')
-    
-    except selenium.common.exceptions.ElementNotInteractableException:
-        print('Element not interactable')
-        speak('The website has crashed due to the element being non interactable')
-
 if __name__ == "__main__":
     wishMe()
     while True:
@@ -165,13 +78,6 @@ if __name__ == "__main__":
             speak("According to Wikipedia")
             print(results)
             speak(results)
-
-        elif 'open youtube' in query:
-            youtubeSearch()
-
-        elif 'open google' in query:
-            #webbrowser.open("google.com")
-            googlesearch('https://www.google.com/')
 
         elif 'open stack' in query:
             webbrowser.open("stackoverflow.com")   
@@ -209,3 +115,30 @@ if __name__ == "__main__":
             except Exception as e:
                 print(e)
                 speak("Apologies Toad, I could not send the mail")
+
+        elif 'search images for' in query:
+            searchterm = query.replace("search images for", "")
+            try:
+                speak(f"Searching images for {searchterm}")
+                imgsearch(searchterm)
+            except Exception as e:
+                print(e)
+                speak("Apologies toad, an exception error has been raised")  
+
+        elif 'search google for' in query:
+            searchterm = query.replace("search google for", "")
+            try:
+                speak(f"Searching google for {searchterm}")
+                gogsearch(searchterm)
+            except Exception as e:
+                print(e)
+                speak("Apologies toad, an exception error has been raised")
+
+        elif 'search youtube for' in query:
+            searchterm = query.replace("search google for", "")
+            try:
+                speak(f"Searching youtube for {searchterm}")
+                ytsearch(searchterm)
+            except Exception as e:
+                print(e)
+                speak("Apologies toad, an exception error has been raised")
