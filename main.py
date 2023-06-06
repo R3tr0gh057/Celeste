@@ -5,11 +5,11 @@ import wikipedia #pip install wikipedia
 import webbrowser
 import os
 import smtplib
-import time
+from selenium import webdriver
 
-from functions.browser.imageSearch import imgsearch
-from functions.browser.googleSearch import gogsearch
-from functions.browser.youtubeSearch import ytsearch
+from functions.browser.searchTools import imgsearch,gogsearch,ytsearch
+from functions.browser.tabNavigation import closeTab,switchTab
+from functions.exploits.passwordCracking import webFind
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -135,10 +135,29 @@ if __name__ == "__main__":
                 speak("Apologies toad, an exception error has been raised")
 
         elif 'search youtube for' in query:
-            searchterm = query.replace("search google for", "")
+            searchterm = query.replace("search youtube for", "")
             try:
                 speak(f"Searching youtube for {searchterm}")
                 ytsearch(searchterm)
             except Exception as e:
                 print(e)
                 speak("Apologies toad, an exception error has been raised")
+
+        elif 'close all tabs' in query:
+            try:
+                closeTab()
+            except Exception as e:
+                print(e)
+                speak("Exception was raised")
+        
+        elif 'switch tabs' in query:
+            try:
+                switchTab()
+            except Exception as e:
+                print(e)
+                speak("Exception was raised")
+
+        """elif 'Run Bruteforcer' in query:
+            try:
+                speak("Which website shall i target?")
+                website = webFind(query)"""
