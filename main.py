@@ -49,7 +49,7 @@ def takeCommand():
         print(f"User said: {query}\n")
 
     except Exception as e:
-        # print(e)    
+        print(e)    
         print("[!] Say that again please...\n")  
         return "None"
     return query
@@ -156,9 +156,9 @@ if __name__ == "__main__":
                 print(e)
                 speak("Apologies toad, an exception error has been raised")
 
-        elif 'run bruteforcer' in query:
+        elif 'run brute force' in query:
             try:
-                query = query.replace("run bruteforcer on")
+                query = query.replace("run brute force on", "")
                 if 'instagram' in query:
                     website = 'https://www.instagram.com/accounts/login/'
                     user_selector = ''
@@ -182,7 +182,7 @@ if __name__ == "__main__":
 
                 speak('What is the username of the target?')
                 username = takeCommand().lower()
-                passlist = 'testPasslist.txt'
+                passlist = 'D:\\--PROJECTS--\\projectCELESTE\\Celeste\\functions\\exploits\\example_passlist.txt'
                 brutes(username, user_selector, pass_selector,enter,passlist,website)
             
             except Exception as e:
