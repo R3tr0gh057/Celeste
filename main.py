@@ -66,7 +66,7 @@ def main():
         # Logic for executing tasks based on query
         while True:
             query = takeCommand().lower()
-            if 'jarvis' in query:
+            if 'bags' in query:
                 speak('How may I help you?')
                 query = takeCommand().lower()
                 if 'wikipedia' in query:
