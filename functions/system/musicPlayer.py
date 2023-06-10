@@ -7,3 +7,8 @@ def player(songName):
         if songName in f.lower():
             print(f"Playing {f}")
             os.startfile(f)
+
+def listsongs():
+    directory = 'D:\--LIBRARY--\MUSIC\_kayou_'
+    for filename in os.listdir(directory):
+        print(filename)

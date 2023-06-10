@@ -10,7 +10,7 @@ from functions.browser.searchTools import imgsearch,gogsearch,ytsearch
 from functions.browser.tabNavigation import closeTab,switchTab
 from functions.exploits.passwordCracking import brutes
 from functions.ai_res.gpt import gpt_res
-from functions.system.musicPlayer import player
+from functions.system.musicPlayer import player, listsongs
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -87,6 +87,12 @@ def main():
                     except Exception as e:
                         print(e)
                         speak("Apologies toad, I could not find the music in your music directory")
+
+                elif 'songs in my playlist' in query:
+                    try:
+                        listsongs()
+                    except:
+                        print("Could not find your music directory")
 
                 elif 'the time' in query:
                     strTime = datetime.datetime.now().strftime("%H:%M:%S")    
