@@ -9,17 +9,15 @@ import smtplib
 from functions.browser.searchTools import imgsearch,gogsearch,ytsearch
 from functions.browser.tabNavigation import closeTab,switchTab
 from functions.exploits.passwordCracking import brutes
-from functions.gpt import gpt_res
+from functions.ai_res.gpt import gpt_res
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
 
-
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
-
 
 def wishMe():
     hour = int(datetime.datetime.now().hour)
