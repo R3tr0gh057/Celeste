@@ -65,7 +65,7 @@ def main():
         # Logic for executing tasks based on query
         while True:
             query = takeCommand().lower()
-            if 'bags' in query:
+            if 'jarvis' in query:
                 speak('How may I help you?')
                 query = takeCommand().lower()
                 if 'wikipedia' in query:
@@ -192,11 +192,9 @@ def main():
                         print(e)
                         speak("The password has been found or you have been locked out, bruteforcing complete")
                 
-                elif 'i have a question' in query:
+                else:
                     try:
-                        speak('What is your question sir?')
-                        question = takeCommand().lower()
-                        answer = gpt_res(question)
+                        answer = gpt_res(query)
                         print(f"To answer your question, {answer}")
                         speak(answer)
                     except Exception as e:
