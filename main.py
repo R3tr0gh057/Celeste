@@ -70,7 +70,7 @@ def main():
                 query = takeCommand().lower()
                 if 'wikipedia' in query:
                     speak('Searching Wikipedia...')
-                    query = query.replace("wikipedia", "")
+                    query = query.replace("search wikipedia for ", "")
                     results = wikipedia.summary(query, sentences=2)
                     speak("According to Wikipedia")
                     print(results)
@@ -79,7 +79,7 @@ def main():
                 elif 'open stack' in query:
                     webbrowser.open("stackoverflow.com")   
 
-                elif 'play music' in query:
+                elif 'play the song' in query:
                     try:
                         song = query.replace("play music", "")
                         player(song)
