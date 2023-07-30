@@ -5,3 +5,4 @@ new_code_base_2.py
 input.wav
 hotword/prediction.py
 dummy.py
+.env

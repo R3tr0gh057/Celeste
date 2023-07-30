@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
 #Google searcher function
 
@@ -13,7 +14,7 @@ def gogsearch(query):
     opt.add_argument("--disable-popup-blocking")
     opt.add_argument("--disable-extentions")
     opt.add_experimental_option("detach", True)
-    browser = webdriver.Chrome(chrome_options=opt)
+    browser = webdriver.Chrome(options=opt)
     wait = WebDriverWait(browser, 10)
 
     try:
@@ -40,7 +41,7 @@ def ytsearch(query):
     opt.add_argument("--disable-popup-blocking")
     opt.add_argument("--disable-extentions")
     opt.add_experimental_option("detach", True)
-    browser = webdriver.Chrome(chrome_options=opt)
+    browser = webdriver.Chrome(options=opt)
     wait = WebDriverWait(browser, 10)
 
     try:
@@ -70,7 +71,7 @@ def imgsearch(query):
     opt.add_argument("--disable-popup-blocking")
     opt.add_argument("--disable-extentions")
     opt.add_experimental_option("detach", True)
-    browser = webdriver.Chrome(chrome_options=opt)
+    browser = webdriver.Chrome(options=opt)
     wait = WebDriverWait(browser, 10)
 
     try:

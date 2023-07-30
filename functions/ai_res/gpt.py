@@ -1,5 +1,8 @@
 import openai
-openai.api_key = "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"
+from dotenv import load_dotenv
+import os
+
+openai.api_key = os.getenv('API')
 
 def gpt_res(prompt):
     response = openai.Completion.create(
