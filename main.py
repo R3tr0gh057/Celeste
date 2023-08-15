@@ -65,7 +65,7 @@ def main():
         # Logic for executing tasks based on query
         while True:
             query = takeCommand().lower()
-            if 'jarvis' in query:
+            if '' in query: #add your own hotword for the AI in the quotes 
                 speak('How may I help you?')
                 query = takeCommand().lower()
                 if 'wikipedia' in query:
@@ -185,7 +185,7 @@ def main():
 
                         speak('What is the username of the target?')
                         username = takeCommand().lower()
-                        passlist = 'D:\\--PROJECTS--\\projectCELESTE\\Celeste\\functions\\exploits\\example_passlist.txt'
+                        passlist = '' #add the path to the passlist file
                         brutes(username, user_selector, pass_selector,enter,passlist,website)
                     
                     except Exception as e:

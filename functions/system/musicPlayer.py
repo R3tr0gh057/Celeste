@@ -1,7 +1,7 @@
 import os
 
 def player(songName):
-    directory = 'D:\--LIBRARY--\MUSIC\_kayou_'
+    directory = '' #add your music directory here
     for filename in os.listdir(directory):
         f = os.path.join(directory, filename)
         if songName in f.lower():
@@ -9,6 +9,6 @@ def player(songName):
             os.startfile(f)
 
 def listsongs():
-    directory = 'D:\--LIBRARY--\MUSIC\_kayou_'
+    directory = '' #add your music directory here
     for filename in os.listdir(directory):
         print(filename)
