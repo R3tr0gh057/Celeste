@@ -13,3 +13,5 @@
 * Search Google: Searches google for the keyword             |Web|
 * Search Youtube: Searches for the keyword in youtube        |Web|
 * Run Bruteforce: Launches a bruteforce attack               |Exploit|
+
+Make sure to create a .env file in celeste/functions/ai_res and add your own OpenAI api key.
