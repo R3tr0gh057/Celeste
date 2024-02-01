@@ -5,6 +5,7 @@ import wikipedia
 import webbrowser
 import os
 import smtplib
+import requests
 
 from functions.browser.searchTools import imgsearch,gogsearch,ytsearch
 from functions.browser.tabNavigation import closeTab,switchTab
