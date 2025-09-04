@@ -6,3 +6,5 @@ input.wav
 hotword/prediction.py
 dummy.py
 .env
+config.ini
+/functions/ai_res/__pycache__
