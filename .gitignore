@@ -8,3 +8,6 @@ dummy.py
 .env
 config.ini
 /functions/ai_res/__pycache__
+/functions/browser/__pycache__
+functions/ai_res/test.py
+/functions/system/__pycache__

@@ -2,16 +2,17 @@ import pyttsx3
 import speech_recognition as sr
 import datetime
 import wikipedia
-import webbrowser
+# import webbrowser
 import os
 import smtplib
 import requests
 
-from functions.browser.searchTools import imgsearch,gogsearch,ytsearch
-from functions.browser.tabNavigation import closeTab,switchTab
-from functions.exploits.passwordCracking import brutes
-from functions.ai_res.gpt import gpt_res
+# from functions.browser.searchTools import imgsearch,gogsearch,ytsearch
+# from functions.browser.tabNavigation import closeTab,switchTab
+# from functions.exploits.passwordCracking import brutes
+# from functions.ai_res.gpt import gpt_res
 from functions.system.musicPlayer import player, listsongs
+from functions.ai_res.local_ollama import get_ai_response
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -195,7 +196,7 @@ def main():
                 
                 else:
                     try:
-                        answer = gpt_res(query)
+                        answer = get_ai_response(query)
                         print(f"To answer your question, {answer}")
                         speak(answer)
                     except Exception as e:
