@@ -11,3 +11,5 @@ config.ini
 /functions/browser/__pycache__
 functions/ai_res/test.py
 /functions/system/__pycache__
+/modules/__pycache__
+/core/__pycache__

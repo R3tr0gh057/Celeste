@@ -9,12 +9,12 @@ def speak(audio):
     engine.say(audio)
     engine.runAndWait()
 
-def take_command():
+def take_command(timeout=5, phrase_time_limit=10):
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("[+] Listening...\n")
         r.pause_threshold = 1
-        audio = r.listen(source, phrase_time_limit=None, timeout=None)
+        audio = r.listen(source, phrase_time_limit=phrase_time_limit, timeout=timeout)
     try:
         print("[+] Recognizing...\n")
         query = r.recognize_google(audio, language='en-in')

@@ -5,12 +5,11 @@ import wikipedia
 import os
 import smtplib
 import requests
+import time
 from core.voice import speak, take_command
 from core.dispatcher import CommandDispatcher
 
-engine = pyttsx3.init('sapi5')
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)
+
 
 def wish_me():
     import datetime
@@ -23,6 +22,7 @@ def wish_me():
         speak("Good Evening Toad!")
     speak("I am Celeste. How may I help you")
 
+
 def sendEmail(to, content):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
@@ -31,16 +31,27 @@ def sendEmail(to, content):
     server.sendmail('youremail@gmail.com', to, content)
     server.close()
 
+
 def main():
     dispatcher = CommandDispatcher()
     wish_me()
     while True:
-        query = take_command().lower()
-        if query == "none":
+        # Efficient listening with timeout and phrase_time_limit
+        query = take_command(timeout=5, phrase_time_limit=10)
+        if not query or query.lower() == "none":
             continue
-        response = dispatcher.dispatch(query)
+        # Prompt engineering for AI queries
+        if 'ai' in query.lower() or query.strip():
+            conversational_prompt = (
+                f"You are Celeste, a friendly and helpful AI assistant. Respond in a natural, conversational way, avoid bullet points or numbered lists, and keep the tone engaging and human-like. Here is the user's message: {query}"
+            )
+            response = dispatcher.dispatch(conversational_prompt)
+        else:
+            response = dispatcher.dispatch(query)
         if response:
+            print(f"Celeste: {response}")
             speak(str(response))
+            time.sleep(10)
 
 if __name__ == "__main__":
     main()
